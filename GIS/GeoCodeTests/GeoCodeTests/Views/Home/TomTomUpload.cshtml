@@ -1,0 +1,21 @@
+﻿@model IEnumerable<GeoCodeTests.Models.TomTom.Location>
+
+@using Newtonsoft.Json;
+
+@{
+    ViewBag.Title = "Results";
+    Layout = "~/Views/_Layout.cshtml";
+}
+<div data-role="grid" data-bind="source: gridSource" data-filterable="true" data-sortable="true" />
+
+@section scripts{
+  <script>
+
+    var viewModel = kendo.observable({
+      gridSource: @Html.Raw(JsonConvert.SerializeObject(Model))
+      });
+
+    kendo.bind($('body'), viewModel);
+
+  </script>
+}

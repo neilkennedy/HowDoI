@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<h2>Upload</h2>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <form action="Home/Upload" method="post" enctype="multipart/form-data">
+        <div class="row">
+          <div class="col-md-12">
+            <input type="file" name="myfile" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <input type="radio" name="geocoder" value="tomtom" checked /> TomTom
+            <input type="radio" name="geocoder" value="esri" checked /> Esri ArcGIS
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <button type="submit">Upload</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

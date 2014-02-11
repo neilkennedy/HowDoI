@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+  <script src="~/Scripts/jquery-2.0.3.min.js"></script>
+  <script src="~/Scripts/bootstrap.js"></script>
+  <script src="~/Scripts/kendo/2013.2.716/kendo.web.min.js"></script>
+  <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+  <link href="~/Content/kendo/2013.2.716/kendo.common.min.css" rel="stylesheet" />
+  <link href="~/Content/kendo/2013.2.716/kendo.bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <div>
+    @RenderBody()
+  </div>
+
+  @RenderSection("scripts", false)
+</body>
+</html>

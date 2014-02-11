@@ -1,0 +1,73 @@
+// OpenLayers Elements
+@control-background-color: rgba(255, 255, 255, 0.4);
+@control-main-color-alpha: rgba(0, 60, 136, 0.5);
+@control-main-color: rgba(0, 60, 136, 0.7);
+@control-secondary-color-alpha: rgba(255, 255, 255, 0.7);
+@control-secondary-color: rgb(255, 255, 255);
+@control-header-color: rgb(255, 255, 255);
+
+html, body{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+#map{
+    width: 100%;
+    height: 100%;
+}
+
+.owl-map-legend{
+
+    &:hover{
+        .owl-map-legend-header{
+            background-color: @control-main-color;
+        }
+        .owl-map-legend-content{
+            background-color: @control-secondary-color;
+        }
+    }
+
+    background: none repeat scroll 0 0 @control-background-color;
+    border-radius: 4px;
+    font-size: 12px;
+    padding: 2px;
+
+    .owl-map-legend-header{
+        background: none repeat scroll 0 0 @control-main-color-alpha;
+        border-radius: 4px 4px 0 0;
+        color: @control-header-color;
+        padding: 5px;
+    }
+
+    .owl-map-legend-content{
+        background: none repeat scroll 0 0 @control-secondary-color-alpha;
+        border-radius: 0 0 4px 4px;
+        padding: 5px;
+    }
+
+    .owl-map-legend-item{
+        clear: both;
+        margin-bottom: 5px;
+        overflow: hidden;
+    }
+
+    .owl-map-legend-circle{
+        border-radius: 20px;
+        display: table-cell;
+        float: left;
+        height: 25px;
+        vertical-align: middle;
+        width: 25px;
+
+        input{
+            margin: 6px 3px 3px 6px;
+        }
+    }
+
+    .owl-map-legend-text{
+        float: left;
+        margin: 5px 0 5px 10px;
+    }
+}
