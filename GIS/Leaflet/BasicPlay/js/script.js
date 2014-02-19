@@ -121,6 +121,7 @@
                 randy = Math.random();
                 x = (randx * width) + ext.getEast();
                 y = (randy * height) + ext.getSouth();
+                console.log('(' + y + ", " + x + "),");
                 featureGroup.addLayer(new L.marker([y, x]).bindPopup('Num: ' + index));
             }
 
