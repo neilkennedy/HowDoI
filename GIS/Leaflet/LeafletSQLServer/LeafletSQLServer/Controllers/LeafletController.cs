@@ -17,11 +17,11 @@ namespace LeafletSQLServer.Controllers
       return View();
     }
 
-    public string Points(string wkt)
+    public JsonResult Points(string wkt)
     {
       var multiPoints = new SpatialDBWorker().GetPoints(wkt);
 
-      return multiPoints;
+      return new JsonResult { Data = multiPoints };
     }
   }
 }

@@ -2,7 +2,11 @@
 //buffer along a line
 //change colours of shapes
 
-(function ($, window, document, L, console, jsts, Wkt) {
+/* JSLint options  */
+/* jslint browser: true, debug: true, plusplus: true */
+/* global jQuery:false, Wkt:false, L:false, */
+
+(function ($, L, console, jsts, Wkt) {
     'use strict';
 
     var map = null,
@@ -130,7 +134,7 @@
     }
 
     //using the Wicket library
-    function WKTTest() {
+    function wktTest() {
         // Create a new Wicket instance
         var wkt = new Wkt.Wkt();
 
@@ -161,11 +165,11 @@
 
         addSomeFeatures();
 
-        WKTTest();
+        wktTest();
 
         $('#plotPoints').on('click', function () {
             redraw($('#numPoints').val());
         });
     });
 
-}($, window, document, L, console, jsts, Wkt));
+}(jQuery, L, console, jsts, Wkt));

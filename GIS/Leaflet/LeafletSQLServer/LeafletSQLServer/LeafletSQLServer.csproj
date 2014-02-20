@@ -112,8 +112,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Bounds.cs" />
-    <Compile Include="Models\Coordinates.cs" />
+    <Compile Include="Models\WKTStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Workers\SpatialDBWorker.cs" />
   </ItemGroup>
@@ -142,6 +141,8 @@
     <Content Include="Scripts\nk.leaflet.js" />
     <Content Include="Scripts\wicket\wicket-leaflet.js" />
     <Content Include="Scripts\wicket\wicket.js" />
+    <Content Include="SQL\insert.sql" />
+    <Content Include="SQL\create.sql" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

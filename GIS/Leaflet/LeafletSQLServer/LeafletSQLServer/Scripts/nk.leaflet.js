@@ -3,6 +3,12 @@
   var map,
     drawnItems = null;
 
+  function addMessage(text) {
+    $('<div id="messages">').html(text).appendTo($('body'));
+
+    setTimeout(function (e) { $('#messages').remove(); }, 4000);
+  }
+
   function initializeMap() {
     map = L.map('map').setView([51.4438971705205, -0.16874313354492188], 5);
     //L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png', {
@@ -50,15 +56,17 @@
     var wellKnownText = new Wkt.Wkt().fromObject(shape).write();
 
     $.post("/Leaflet/Points", "wkt=" + wellKnownText, function (data) {
-      if (data !== "") {
+      if (data.Returned !== 0) {
         var wkt = new Wkt.Wkt(),
           cluster = new L.MarkerClusterGroup();
 
-        wkt.read(data);
+        wkt.read(data.WKT);
         cluster.addLayer(wkt.toObject());
         cluster.addTo(map);
+
+        addMessage('Showing ' + data.Returned + ' of ' + data.Total);
       } else {
-        alert('No points for this area');
+        addMessage('No points for this area');
       }
     });
   }
