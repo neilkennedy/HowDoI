@@ -12,7 +12,7 @@ namespace LeafletSQLServer.Workers
   {
     public WKTStatus GetPoints(string wkt)
     {
-      int amountToReturn = 10;
+      int amountToReturn = 5000;
 
       var sql = @"DECLARE @shape geography = geography::STGeomFromText('" + wkt + @"', 4326);
 

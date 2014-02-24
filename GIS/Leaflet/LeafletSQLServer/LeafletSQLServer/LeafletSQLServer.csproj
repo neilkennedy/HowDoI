@@ -124,6 +124,7 @@
     <Content Include="App_Data\SpatialDB_log.ldf">
       <DependentUpon>SpatialDB.mdf</DependentUpon>
     </Content>
+    <Content Include="Content\images\loading.gif" />
     <Content Include="Content\leaflet.draw\images\spritesheet-2x.png" />
     <Content Include="Content\leaflet.draw\images\spritesheet.png" />
     <Content Include="Content\leaflet.draw\leaflet.draw.css" />

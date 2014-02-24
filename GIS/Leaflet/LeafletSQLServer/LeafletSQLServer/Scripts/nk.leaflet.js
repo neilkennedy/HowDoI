@@ -1,7 +1,10 @@
 ﻿(function () {
 
   var map,
-    drawnItems = null;
+    drawnItems = null,
+    eventRegulator = null,
+    getPointsRequest = null,
+    clusterLayer = null;
 
   function addMessage(text) {
     $('<div id="messages">').html(text).appendTo($('body'));
@@ -15,6 +18,9 @@
     L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
       attribution: ''
     }).addTo(map);
+
+    map.on('zoomend', getPointsFromEvent);
+    map.on('moveend', getPointsFromEvent);
   }
 
   function addDrawControl() {
@@ -51,18 +57,49 @@
     });
   }
 
+  //The event listener that gets called to load up some points from the map viewport
+  function getPointsFromEvent(e) {
+    var bounds = e.target.getBounds(),
+      rectangle = L.rectangle(bounds);
+
+    //we don't want to go to the server every time an event is raised
+    //because the user might just be panning / zooming multiple times around the map
+    //so we wait until there is a 1 second gap between event calls and then we go get some points!
+    if (eventRegulator) { clearTimeout(eventRegulator); }
+
+    eventRegulator = setTimeout(function () {
+      eventRegulator = null;
+      getPoints(rectangle);//get the bounds of the map
+    }, 1000);
+  }
+
+  //go to the server to return points contained within the shape
   function getPoints(shape) {
+
+    console.log('getting points');
 
     var wellKnownText = new Wkt.Wkt().fromObject(shape).write();
 
-    $.post("/Leaflet/Points", "wkt=" + wellKnownText, function (data) {
-      if (data.Returned !== 0) {
-        var wkt = new Wkt.Wkt(),
-          cluster = new L.MarkerClusterGroup();
+    $('#loading').show();
 
+    if (getPointsRequest) { getPointsRequest.abort(); }
+
+    getPointsRequest = $.post("/Leaflet/Points", "wkt=" + wellKnownText, function (data) {
+
+      getPointsRequest = null;
+      $('#loading').hide();
+
+      if (data.Returned !== 0) {
+        var wkt = new Wkt.Wkt();
         wkt.read(data.WKT);
-        cluster.addLayer(wkt.toObject());
-        cluster.addTo(map);
+
+        if (!clusterLayer) {
+          clusterLayer = new L.MarkerClusterGroup();
+          clusterLayer.addTo(map);
+        }
+
+        clusterLayer.clearLayers();
+        clusterLayer.addLayer(wkt.toObject());
 
         addMessage('Showing ' + data.Returned + ' of ' + data.Total);
       } else {

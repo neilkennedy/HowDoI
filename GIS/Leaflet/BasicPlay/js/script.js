@@ -125,7 +125,17 @@
                 randy = Math.random();
                 x = (randx * width) + ext.getEast();
                 y = (randy * height) + ext.getSouth();
-                console.log('(' + y + ", " + x + "),");
+
+				/* //GENERATE SQL INSERT STATEMENTS FOR RANDOM POINTS
+                if (index % 1000 === 0) {
+					console.log('(' + y + ", " + x + ");"); //lat, long   
+                    console.log('');
+                    console.log('INSERT INTO Points (Latitude, Longitude) VALUES');
+                } else {
+                    console.log('(' + y + ", " + x + "),"); //lat, long   
+                }
+				*/
+
                 featureGroup.addLayer(new L.marker([y, x]).bindPopup('Num: ' + index));
             }
 
