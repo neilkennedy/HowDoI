@@ -14,21 +14,22 @@ namespace LeafletSQLServer.Workers
     {
       int amountToReturn = 5000;
 
-      var sql = @"DECLARE @shape geography = geography::STGeomFromText('" + wkt + @"', 4326);
+      var conn = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\dev\HowDoI\GIS\Leaflet\LeafletSQLServer\LeafletSQLServer\App_Data\SpatialDB.mdf;Integrated Security=True");
+      var dataSet = new DataSet();
+      SqlDataAdapter dataAdapter;
+
+      //need to call .ReorientObject() because the Wicket plugin for Leaflet gives us an inverted polygon
+      var sql = @"DECLARE @shape geography = geography::STGeomFromText('" + wkt + @"', 4326).ReorientObject();
 
                   SELECT COUNT(p1.ID), geography:: UnionAggregate(p1.spatialGeog).STAsText()
                   FROM Points p1
                   WHERE p1.ID in (SELECT TOP " + amountToReturn + @" p2.ID 
                                   FROM Points p2 
-                                  WHERE @shape.STContains(p2.spatialGeog) = 0);
+                                  WHERE p2.spatialGeog.STWithin(@shape) = 1);
 
-                  SELECT COUNT(ID) FROM Points WHERE @shape.STContains(spatialGeog) = 0";
+                  SELECT COUNT(ID) FROM Points WHERE spatialGeog.STWithin(@shape) = 1";
 
-      var conn = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\dev\HowDoI\GIS\Leaflet\LeafletSQLServer\LeafletSQLServer\App_Data\SpatialDB.mdf;Integrated Security=True");
-      var dataSet = new DataSet();
-
-      var dataAdapter = new SqlDataAdapter(sql, conn);
-
+      dataAdapter = new SqlDataAdapter(sql, conn);
       dataAdapter.Fill(dataSet);
 
       int total = (int)dataSet.Tables[1].Rows[0][0];
