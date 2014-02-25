@@ -138,6 +138,7 @@
     </Content>
     <Content Include="Global.asax" />
     <Content Include="Scripts\leaflet.draw\leaflet.draw-src.js" />
+    <Content Include="Scripts\leaflet.geometryutil\leaflet.geometryutil.js" />
     <Content Include="Scripts\markercluster\leaflet.markercluster-src.js" />
     <Content Include="Scripts\nk.leaflet.js" />
     <Content Include="Scripts\wicket\wicket-leaflet.js" />
