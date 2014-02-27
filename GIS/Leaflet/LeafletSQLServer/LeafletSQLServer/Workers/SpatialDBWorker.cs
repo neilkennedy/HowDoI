@@ -14,10 +14,11 @@ namespace LeafletSQLServer.Workers
     /// Uses WKT to define the boundary area and returns all points contained within it
     /// </summary>
     /// <param name="wkt">A Well Known Text string</param>
+    /// <param name="reorientObject">Might need to call .ReorientObject() because the Wicket plugin for Leaflet gives us an inverted polygon</param>
     /// <returns></returns>
-    public WKTStatus GetPointsFromWKT(string wkt)
+    public SpatialResult GetPointsFromWKT(string wkt, bool reorientObject)
     {
-      var shapeSQL = string.Format("geography::STGeomFromText('{0}', 4326).ReorientObject();", wkt);
+      var shapeSQL = string.Format("geography::STGeomFromText('{0}', 4326){1};", wkt, reorientObject ? ".ReorientObject()" : "");
       return GetPoints(shapeSQL);
     }
 
@@ -31,7 +32,7 @@ namespace LeafletSQLServer.Workers
     /// <param name="lng"></param>
     /// <param name="radiusInMeters"></param>
     /// <returns></returns>
-    public WKTStatus GetPointsFromCircle(double lat, double lng, double radiusInMeters)
+    public SpatialResult GetPointsFromCircle(double lat, double lng, double radiusInMeters)
     {
       var shapeSQL = string.Format("geography::STGeomFromText('POINT({0} {1})', 4326).STBuffer({2});", lng, lat, radiusInMeters);
       return GetPoints(shapeSQL);
@@ -42,22 +43,20 @@ namespace LeafletSQLServer.Workers
     /// </summary>
     /// <param name="shapeSQL"></param>
     /// <returns></returns>
-    public WKTStatus GetPoints(string shapeSQL)
+    public SpatialResult GetPoints(string shapeSQL)
     {
-      int amountToReturn = 5000;
+      int amountToReturn = 2000;
 
       var conn = new SqlConnection(@"Data Source=(LocalDB)\v11.0;AttachDbFilename=C:\dev\HowDoI\GIS\Leaflet\LeafletSQLServer\LeafletSQLServer\App_Data\SpatialDB.mdf;Integrated Security=True");
       var dataSet = new DataSet();
       SqlDataAdapter dataAdapter;
 
-      //need to call .ReorientObject() because the Wicket plugin for Leaflet gives us an inverted polygon
+      //Get a limited number of shapes (don't care what order) plus the total number available
       var sql = string.Format(@"DECLARE @shape geography = {0}
 
-                  SELECT COUNT(p1.ID), geography:: UnionAggregate(p1.spatialGeog).STAsText()
-                  FROM Points p1
-                  WHERE p1.ID in (SELECT TOP {1} p2.ID 
-                                  FROM Points p2 
-                                  WHERE p2.spatialGeog.STWithin(@shape) = 1);
+                  SELECT TOP {1} ID, spatialGeog.STAsText()
+                  FROM Points
+                  WHERE spatialGeog.STWithin(@shape) = 1;
 
                   SELECT COUNT(ID) FROM Points WHERE spatialGeog.STWithin(@shape) = 1", shapeSQL, amountToReturn);
 
@@ -66,14 +65,22 @@ namespace LeafletSQLServer.Workers
 
       int total = (int)dataSet.Tables[1].Rows[0][0];
 
-      var wktStatus = new WKTStatus
+      var spatialResult = new SpatialResult
       {
         Total = total,
-        Returned = (int)dataSet.Tables[0].Rows[0][0],
-        WKT = dataSet.Tables[0].Rows[0][1].ToString()
+        Items = new List<SpatialItem>()
       };
 
-      return wktStatus;
+      foreach (DataRow row in dataSet.Tables[0].Rows)
+      {
+        spatialResult.Items.Add(new SpatialItem
+        {
+          ID = (int)row[0],
+          WKT = row[1].ToString()
+        });
+      }
+
+      return spatialResult;
     }
   }
 }

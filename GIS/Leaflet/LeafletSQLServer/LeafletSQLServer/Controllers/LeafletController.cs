@@ -16,17 +16,5 @@ namespace LeafletSQLServer.Controllers
     {
       return View();
     }
-
-    public JsonResult PointsFromWKT(string wkt)
-    {
-      var multiPoints = new SpatialDBWorker().GetPointsFromWKT(wkt);
-      return new JsonResult { Data = multiPoints };
-    }
-
-    public JsonResult PointsFromCircle(double lat, double lng, double radiusInMeters)
-    {
-      var multiPoints = new SpatialDBWorker().GetPointsFromCircle(lat, lng, radiusInMeters);
-      return new JsonResult { Data = multiPoints };
-    }
   }
 }
