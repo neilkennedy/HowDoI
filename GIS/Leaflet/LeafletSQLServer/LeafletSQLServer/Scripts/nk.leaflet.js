@@ -10,7 +10,9 @@
 		previouslyLoaded = {
 			bounds: null,
 			moreOnServer: true
-		};
+		},
+		tableTemplate = '<table><thead><tr><th colspan=4>{title}</th></tr></thead></table>',
+		rowTemplate = '<tr><td>{item1}</td><td>{item2}</td><td>{item3}</td><td>{item4}</td></tr>';
 
 	/// <summary>
 	/// Shows the message popup and removes it after a set amount of time
@@ -210,13 +212,23 @@
 	/// </summary>
 	/// <param name="event"></param>
 	function popupOpen(event) {
-		var popup = event.popup,
-			content = popup.getContent();
+	  var popup = event.popup,
+			content = popup.getContent(),
+      popupTable,
+      rowContent;
 
 		if (content.indexOf('##') === 0) {
-		  popup.setContent('Loading...');
+			popup.setContent('Loading...');
 			$.get('/api/popup', { id: content.replace('##','') }, function (data) {
-				popup.setContent(data);
+			  popupTable = $(tableTemplate.replace('{title}', data.Title));
+
+			  $.each(data.Rows, function (index, row) {
+			    rowContent = rowTemplate.replace('{item1}', row.item1).replace('{item2}', row.item2).replace('{item3}', row.item3).replace('{item4}', row.item4)
+			    popupTable.append(rowContent)
+			  });
+
+			  popup.setContent($('<div>').append(popupTable).html());
+				console.log(data);
 			});
 		}
 	}
